@@ -1,0 +1,13 @@
+#game_wrapper{ margin:0px auto; width:750px; }  
+  
+#game_content{ position:relative; width:710px; height:320px; top:30px; overflow:hidden; border:5px solid #f5f5f5; background: url(./background.jpg); }  
+  
+    #cloud1{ position:absolute; top:20px; left: -150px; z-index:23; }  
+    #cloud2{ position:absolute; top:40px; left: -250px; z-index:4; }  
+    #cloud3{ position:absolute; top:5px; left: -100px; z-index:3; }  
+  
+    #jar{ position:absolute; top:110px; left: -240px; z-index:20; }  
+    #ripple{ position:absolute; top:220px; left: -250px; z-index:19; }  
+	 #welcome{position:absolute; top:-100px; left:200px; z-index:22;}
+	img.no_border{ border:0px;}
+	

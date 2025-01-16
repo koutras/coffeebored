@@ -1,0 +1,19 @@
+#mainApp_wrapper{ margin:0px auto; width:960px; }  
+  
+#mainApp_content{ position:relative; width:910px; height:600px; top:5px; overflow:hidden; border:5px solid #f5f5f5; background: url(/static/mainApp/background.jpg); }  
+  
+    #inv{ position:absolute; top:330px; left: 10px; z-index:23;}  
+    #who{ position:absolute; top:390px; left: 10px; z-index:4;}  
+    #rights{ position:absolute; top:480px; left: 10px; z-index:3; }  
+    #coffee{ position:absolute; top:5px; left: 410px; z-index:20; }  
+    #photo{ position:absolute; top:30px; left: 20px; z-index:20; }  
+	 #chat_messages{  position:absolute; top:100px; padding:4px; left: 400px; z-index:2; height:320px;
+		 width:450px; border:2px ridge white;}
+	 #chat_input{  position:absolute; top:480px; left: 400px; z-index:10; width:300px;}
+	 #online{  position:absolute; top:130px; left: 50px; z-index:2; width:300px;}
+	 img.no_border{ border:0px;}
+	 #coffee img{width:15%;}
+	 #photo img{width: 20%;}
+	 #fb_photo{width:200px;}
+	 img{width:40%;}
+	

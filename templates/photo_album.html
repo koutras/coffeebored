@@ -1,0 +1,41 @@
+{% extends "catalog.html" %}
+{% block content %}
+	<script>
+		$(document).ready(function(){
+			$("a.fancybox").fancybox({
+				
+				helpers : {
+					title : { 
+						type: 'over'
+					}
+				}
+			});
+			
+		});
+	</script>
+<div class="wrapper">
+	<h1>{{album.name}}</h1>
+	<h3>{{album.description}}</h3>
+	<br /><br />
+	<div class="container_12">	
+		{% for frame in frames %}
+			{% if forloop.counter0|divisibleby:3 %}
+				{% if not forloop.first %}
+		</div>
+				{% endif %}
+		<div class="imageRow clearfix">
+			{% endif %}
+			<div class="grid_4">
+					{#{{frame.name}} #}
+					{#<a href="{{frame.image.url}}" rel="lightbox[{{album.name}}]" title={{frame.name}}> #}
+					<a class="fancybox" rel="gallery" title="{{frame.description}}"  href="{{frame.image.url}}">
+						<img  src={{frame.thumbnail.url}}
+							alt="{{frame.name}}" class="bn" />
+					</a>
+					<br/><br/>
+				{#	<p><a href=frame.get_absolute_url>more...</a> </p> #}
+			</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

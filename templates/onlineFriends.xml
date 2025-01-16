@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<onlineFriends>
+{% for friend in onlineFriends %}
+    <friend>
+     <name> {{ friend.name }}</name>
+     <id> {{ friend.id }} </id>
+    </friend>
+{% endfor %}
+{% for friend in onlineFofs %}
+<fof>
+ <name> {{ friend.name }}</name>
+ <id> {{ friend.id }} </id>
+</fof>
+{% endfor %}
+</onlineFriends>
+

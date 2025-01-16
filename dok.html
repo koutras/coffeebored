@@ -1,0 +1,29 @@
+<html>
+<head>
+</head>
+<body>
+<script>
+//window.addEventListener('prompt',byeBye,false);
+//window.onload = function (){ alert('user entering');}
+    function closeIt(e){
+        var e = e || window.event;
+        /*
+        if (e) {
+            e.returnValue = str;
+        }
+        */
+        window.location.replace("http://www.yahoo.com");    
+        return 'shit';
+    }
+
+    function byeBye(){
+        window.location.replace("http://www.google.com");    
+        return 'shit';
+    }
+
+window.onbeforeunload = closeIt; 
+//window.onload = function(){alert('hello');}
+//window.addEventListener('beforeunload',byeBye,false);
+ </script>
+</body>
+</html>

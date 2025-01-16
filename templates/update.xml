@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ChatUpdate chat="{{ chat }}" time="{{ time }}">
+{% for m in messages %}
+<p>({{ m.chat }}) {{ m.user }} ( {{ m.timestamp }} ): {{ m.message|escape }} </p>
+{% endfor %}
+</ChatUpdate>

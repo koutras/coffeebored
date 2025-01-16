@@ -1,0 +1,60 @@
+	<link href="/static/mainApp/mainApp.css" rel="stylesheet" />
+	{#<script src="/static/mainApp/mainApp.js" type="text/javascript"></script>#}
+	<div id="mainApp_wrapper">
+		<div id="mainApp_content">
+
+    		<fb:login-button autologoutlink="true" scope="publish_stream"></fb:login-button>
+
+
+    		 <div id="fb-root"></div>
+			 {% if current_user %}
+				<div >
+					<p><a href="{{ current_user.profile_url }}"><div id="fb_photo"><img src="http://graph.facebook.com/{{ current_user.id }}/picture?type=square"/></div></a></p>
+					<p>Hello, {{ current_user.name|escape }}</p>
+				</div>
+			 {% else %}
+			<div id="photo"><img class="noborder" src="/static/mainApp/photo.png"></div>
+			 {% endif %}
+
+			<div id="inv"><img class="noborder" src="/static/mainApp/inv.png"></div>
+			<div id="who"><img class="noborder" src="/static/mainApp/who.png"></div>
+			<div id="rights"><img  class="noborder" src="/static/mainApp/rights.png"></div>
+			<div id="coffee"><img class="noborder" src="/static/mainApp/coffee.png"></div>
+			<div id="online">
+				<h2> Είναι online </h2>
+					<img src='/static/photo.png'>
+					<img src='/static/photo.png'>
+				<br>
+			</div>
+			<div id="chat_messages">
+				{% for m in messages %}
+					<p> {{ m.user }} : {{ m.message|escape }} </p>
+				{% endfor %}
+			</div>
+			<div id="chat_input">
+				<form action="/" method="post">
+					<p><b> Νέο μήνυμα από: {{current_user.name}}</p>
+							<div><textarea name="message" rows="2" cols="60"></textarea></div>
+							<div><input type="submit" value="Στείλε"></div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+				<script>
+					window.fbAsyncInit = function() {
+					  FB.init({appId: '{{ facebook_app_id }}', status: true, cookie: true,
+								  xfbml: true});
+					  FB.Event.subscribe('{% if current_user %}auth.logout{% else %}auth.login{% endif %}', function(response) {
+						 {% if current_user %} window.location = "/logout" {% else %} window.location.reload(); {% endif %}
+					  });
+					};
+					(function() {
+					  var e = document.createElement('script');
+					  e.type = 'text/javascript';
+					  e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+					  e.async = true;
+					  document.getElementById('fb-root').appendChild(e);
+					}());
+				 </script>
+

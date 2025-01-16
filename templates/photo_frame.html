@@ -1,0 +1,14 @@
+{% extends "catalog.html" %}
+{% block content %}
+<div class="wrapper">
+	<div class="container_12">
+		<div class="grid_6">
+			<img width="400" src={{frame.image.url}} alt="{{frame.name}}"  />
+		</div>
+		<div class="grid_6">
+			<h1> {{frame.name}} </h1>
+			{{frame.description}}
+		</div>
+	</div>
+</div>
+{% endblock %}

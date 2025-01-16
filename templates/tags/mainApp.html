@@ -1,0 +1,253 @@
+{% if current_user %}
+<script type='text/javascript'>
+openChannel = function() {
+            var token = '{{ channel_token }}';
+            //constructor of channel
+            var channel = new goog.appengine.Channel(token);
+            var handler = {
+              'onopen': onOpened,
+              'onmessage': onMessage,
+              'onerror': onError,
+              'onclose': function() { } 
+            };
+            var socket = channel.open(handler);
+            //socket.onopen = onOpened;
+            socket.onmessage = onMessage;
+        
+          }
+
+        setTimeout(openChannel,100);
+        onOpened = function(){
+           // alert('channel opened');
+        }
+
+       function onError(){
+         //alert('error in channel');
+         post('/refreshC',null,'post');
+            
+        }
+            
+
+        //my code
+        //handle message from server
+        function onMessage(message) {
+            //the name invitation got stuck 
+            //even if its treated like o simple message
+            // in some cases
+            try{
+            var invitation = JSON.parse(message.data);
+            }catch(err){ alert('error in json');return;}
+            //alert(invitation.type);
+            
+            if (invitation.type=="ni"){ //new invitation
+                if(invitation.accepted=='notYet'){
+                    //send the original message! beware
+                     //alert('invitation bitch');
+                     showInvitation(message);
+                     
+                }
+                else if(invitation.accepted=='Yes'){
+                    alert('O '+ invitation.receiver_name +' αποδέχτηκε την πρόσκληση!');
+                }
+                else{
+                    alert('O '+ invitation.receiver_name +' αρνήθηκε την πρόσκληση..');
+                }
+            }
+
+            else if(invitation.type=="rua"){ //are you alive message
+                //alert('rua');
+                var postData = new Array();
+                postData['receiver_id']=invitation.receiver_id;
+                post('/heartBeat',postData,'post');
+            }
+        }
+        
+        //send newly created invitation to server
+        function sendMessage(){
+            var sender_id = "{{ current_user.id }}";
+            var sender_name = "{{ current_user.name }}"; 
+            var postData = new Array();
+            var onlineFriends=document.getElementById("onlineFriends");
+            //get selected person from html
+            var receiver_id = onlineFriends.options[onlineFriends.selectedIndex].value;
+            var receiver_name = onlineFriends.options[onlineFriends.selectedIndex].text; 
+            var nearbyCafeterias=document.getElementById("nearbyCafeterias");
+            //get the text this time, not the id (a.k)
+            var place = nearbyCafeterias.options[nearbyCafeterias.selectedIndex].text; 
+            var startTime = document.getElementById("range-1a").value;
+            var endTime = document.getElementById("range-1b").value;
+            //alert(sender_id+" " +sender_name+" "+receiver_id +" "+ place +" "+startTime+
+             //       " "+endTime);
+            
+            postData['sender_id']=sender_id;
+            postData['sender_name']=sender_name;
+            postData['receiver_id']=receiver_id;
+            postData['receiver_name']=receiver_name;
+            postData['place']=place;
+            postData['startTime']=startTime;
+            postData['endTime']=endTime;
+            post('/invite', postData, 'post');
+        }
+        
+       
+        function showInvitation(invit) {
+            var postData = new Array();
+            //I assume the JSON function is provided by the library a.k
+            var invitation = JSON.parse(invit.data);
+            
+            var x;
+            var message="Ο χρήστης " + invitation.sender_name + " σας προσκάλεσε για καφέ, "
+                + 'στην καφετέρια ' + invitation.place +'  ' + 'στις ' + invitation.startTime +':00-'+invitation.endTime+':00' ;
+            
+            postData['sender_id']=invitation.sender_id;
+            
+            if (confirm(message+" ,Πιέστε ΟΚ για αποδοχή!!") == true) {
+                postData['accepted']='Yes'; 
+                postData['receiver_name']=invitation.receiver_name;
+                postData['invitation_key']=invitation.key;
+                post('/accept', postData, 'post');
+            } else {
+                postData['accepted']='No';
+                postData['receiver_name']=invitation.receiver_name;
+                postData['invitation_key']=invitation.key;
+                post('/accept', postData, 'post');
+            }
+                    
+        }
+        
+
+            /*
+                function closeIt(e){
+                    var e = e || window.event;
+                   // document.location.href="/logout";
+                    return null;
+                    return 'bye';
+                }
+               function byeBye(){
+                    window.location.replace("http://local.coffeebored.appspot.com:10080/logout");    
+                }
+               window.addEventListener('beforeunload',byeBye,false);
+                window.onbeforeunload = closeIt;
+            */
+       
+</script>
+
+{% endif %}
+
+
+	<div id="mainApp_wrapper">
+
+		<div id="mainApp_content">
+
+    		<fb:login-button autologoutlink="true" scope="publish_stream"></fb:login-button>
+
+
+    		 <div id="fb-root"></div>
+			 {% if current_user %}
+				<div >
+					<p><a href="{{ current_user.profile_url }}"><div id="fb_photo"><img src="http://graph.facebook.com/{{ current_user.id }}/picture?type=square"/></div></a></p>
+					<p>Καλωσήρθες, {{ current_user.name|escape }} !</p>
+				</div>
+
+
+			<div id="inv" data-role="main" class="ui-content">
+                
+				{% if current_user.googleLatitude %}
+					{#<button onclick="initialize()">Το στίγμα μου είναι (lat,long): {{current_user.googleLongitude}}/{{current_user.googleLatitude}} επαναπροδιορισμός;</button>#}
+                    <p> Εντοπίστηκε προσεγγιστικά η περιοχή σου! </p>
+				{% else %}
+                {# run geolocation #}
+
+                    <p> Λυπούμαστε αλλά δεν μπορεί να προσδιοριστεί η θέση σου! </p>
+					<button onclick="initialize()"> Πίεσε το κουμπί και αποδέξου την ειδοποίηση</button>
+				{% endif %}
+			 {% endif %}
+				{#<a onclick="LoadOnlineFriends()" href="#onlineFriends" data-rel="popup" class="ui-btn ui-btn-inline ui-corner-all">Με ποιόν θέλω να πάω για καφέ;</a>#}
+                
+
+               {% if current_user %} 
+               {% if current_user.googleLatitude %}
+               <form>
+                    {#<div class="ui-field-contain" onclick="LoadOnlineFriends()">#}
+                    <div class="ui-field-contain"> 
+                        <label for="select-native-1">Με ποιον θέλω να παω για καφέ;</label>
+                        <select   id="onlineFriends">
+                        </select>
+                    </div>
+                    <div class="ui-field-contain">
+                        <label for="select-native-1">Σε ποια καφετέρια;</label>
+                        <select name="select-native-1"  id="nearbyCafeterias">
+                        </select>
+                    </div>
+                    <div data-role="rangeslider" data-track-theme="b" data-theme="a">
+                        <label for="range-1a">Σε ποιο διάστημα μπορώ για καφέ;</label>
+                        <input name="range-1a" id="range-1a" min="8" max="24" value="14" type="range">
+                        <label for="range-1b">Rangeslider:</label>
+                        <input name="range-1b" id="range-1b" min="8" max="24" value="20" type="range">
+                    </div>
+                    {#
+                     <label>
+                        <input name="checkbox-0 " type="checkbox">Δέχομαι προσκλήσεις απο άλλους;
+                    </label>#}
+              </form>
+
+                {#
+                <label for="flip-checkbox-3">Αν όλα  ΟΚ, γύρνα τον διακόπτη! </label>
+                    <input data-role="flipswitch" name="flip-checkbox-3" id="flip-checkbox-3" data-on-text="On!" data-off-text="Off" data-wrapper-class="custom-size-flipswitch" type="checkbox"> #}
+
+            <label for="submit-4" class="ui-hidden-accessible">Send:</label>
+            <button onclick="sendMessage()" class="ui-shadow ui-btn ui-corner-all" type="submit" id="submit-4">Στείλε Πρόσκληση!</button>
+            {% endif %}
+            {% else %}
+                <div> Συνδέσου στο facebook για να ξεκινήσει η εφαρμογή </div>
+            {% endif %}
+                
+  			</div>
+			{% block script %}
+			<script src="/static/asynch.js" language="javascript"> </script>
+			{% endblock %}
+			{#
+			<div id="chat_messages">
+			</div>
+			#}
+			
+		{#	<div id="chat_messages">
+				{% for m in messages %}
+					<p> {{ m.user }} : {{ m.message|escape }} </p>
+				{% endfor %}
+			</div>
+		#}
+
+			  <div id="map-canvas"></div> 
+
+		{#
+			<div id="chat_input">
+				<form action="" method="post">
+					<p><b> Νέο μήνυμα από: {{current_user.name}}</p>
+							<textarea name="message" rows="3" cols="60"></textarea>
+							<input type="submit" value="Στείλε">
+				</form>
+			</div>
+		#}
+		</div>
+	</div>
+
+				<script>
+					window.fbAsyncInit = function() {
+					  FB.init({appId: '{{ facebook_app_id }}', status: true, cookie: true,
+								  xfbml: true});
+					  FB.Event.subscribe('{% if current_user %}auth.logout{% else %}auth.login{% endif %}', function(response) {
+						 {% if current_user %} window.location = "/logout" {% else %} window.location.reload(); {% endif %}
+					  });
+					};
+					(function() {
+					  var e = document.createElement('script');
+					  e.type = 'text/javascript';
+					  e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+					  e.async = true;
+					  document.getElementById('fb-root').appendChild(e);
+					}());
+
+                				 </script>
+					
+

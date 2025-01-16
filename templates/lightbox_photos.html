@@ -1,0 +1,25 @@
+{% block photos %}
+	<h3>{{album.name}}</h3>
+	{{album.description}}
+	<br /><br />
+	<div class="imageRow">
+	{% for frame in latest_frames %}
+			<a href="{{frame.image.url}}" rel="lightbox[{{album.name}}]" title={{frame.description}}>
+				<img src={{frame.thumbnail.url}}
+					alt="{{frame.name}}" class="bn" />
+			</a>
+	{% endfor %}
+	</div>
+
+
+{% comment %}  
+<div class="imageRow">
+	<div class="single">
+		<a href="/media/images/bulk/537249_122659021235126_462880110_n.jpg" rel="lightbox" title="my caption"><img height="150" src="/media/images/bulk/thumbnails/thumb_537249_122659021235126_462880110_n.jpg" alt="Cupcakes" /></a>
+
+	<a href="/media/images/bulk/150260_124218961079132_705544782_n.jpg" rel="lightbox" title="my caption"><img  height="150"src="/media/images/bulk/thumbnails/thumb_150260_124218961079132_705544782_n.jpg" alt="Coffee" /></a>
+	</div>
+</div> 
+{% endcomment %}
+
+{% endblock %}
